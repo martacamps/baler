@@ -59,16 +59,16 @@ def load_data(data_path,config):
     path = Path(data_path)
     file_extension = path.suffix
 
-    if ".csv" in file_extension:
+    if file_extension in [".csv"]:
         data_file = pd.read_csv(data_path,low_memory=False)
-    elif ".root" in file_extension:
+    elif file_extension in [".root"]:
         tree = uproot.open(data_path)[config["Branch"]][config["Collection"]][config["Objects"]]
         global Names
         Names = Type_clearing(tree)
         data_file = tree.arrays(Names, library="pd")
-    elif ".pickle" in file_extension:
+    elif file_extension in [".pickle"]:
         data_file = pd.read_pickle(data_path)
-    elif ".hdata_file5" in file_extension:
+    elif file_extension in [".hdf5"]:
         data_file = pd.read_pickle(data_path)
 
     return data_file

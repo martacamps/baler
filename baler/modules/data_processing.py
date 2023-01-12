@@ -70,6 +70,8 @@ def load_data(data_path,config):
         data_file = pd.read_pickle(data_path)
     elif file_extension in [".hdf", ".h4", ".hdf4", ".he2", ".h5", ".hdf5", ".he5"]:
         data_file = pd.read_hdf(data_path)
+    else:
+        raise Exception(f"Unsupported file type: {file_extension}")
 
     return data_file
 

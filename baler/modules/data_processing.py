@@ -68,8 +68,8 @@ def load_data(data_path,config):
         data_file = tree.arrays(Names, library="pd")
     elif file_extension in [".pickle"]:
         data_file = pd.read_pickle(data_path)
-    elif file_extension in [".hdf5"]:
-        data_file = pd.read_pickle(data_path)
+    elif file_extension in [".hdf", ".h4", ".hdf4", ".he2", ".h5", ".hdf5", ".he5"]:
+        data_file = pd.read_hdf(data_path)
 
     return data_file
 

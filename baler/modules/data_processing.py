@@ -9,6 +9,8 @@ import uproot
 import numpy as np
 import torch
 
+from pathlib import Path
+
 def import_config(config_path):
     with open (config_path) as json_config:
         config = json.load(json_config)
@@ -54,19 +56,22 @@ def numpy_to_df(array,config):
     return df
 
 def load_data(data_path,config):
-    if ".csv" in data_path[-4:]:
-        df = pd.read_csv(data_path,low_memory=False)
+    path = Path(data_path)
+    file_extension = path.suffix
 
-    elif ".root" in data_path[-5:]:
+    if ".csv" in file_extension:
+        data_file = pd.read_csv(data_path,low_memory=False)
+    elif ".root" in file_extension:
         tree = uproot.open(data_path)[config["Branch"]][config["Collection"]][config["Objects"]]
         global Names
         Names = Type_clearing(tree)
-        df = tree.arrays(Names, library="pd")
+        data_file = tree.arrays(Names, library="pd")
+    elif ".pickle" in file_extension:
+        data_file = pd.read_pickle(data_path)
+    elif ".hdata_file5" in file_extension:
+        data_file = pd.read_pickle(data_path)
 
-    elif ".pickle" in data_path[-8:]:
-        df = pd.read_pickle(data_path)
-
-    return df
+    return data_file
 
 def clean_data(df,config):
     df = df.drop(columns=config["dropped_variables"])

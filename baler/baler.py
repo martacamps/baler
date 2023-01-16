@@ -150,7 +150,7 @@ def perform_decompression():
     # ---------------------------------------------------------------------
     # Creatre pickles and save to disc
 
-    if config['save_as_root']:
+    if config["save_as_root"]:
         helper.to_root(decompressed, config, f'{output_path}decompressed.root')
         helper.to_pickle(decompressed, f'{output_path}decompressed.pickle')
     else:

@@ -49,7 +49,7 @@ def numpy_to_tensor(data):
 
 def normalize(data,config):
     data = numpy.apply_along_axis(data_processing.normalize,axis=0,arr=data,config=config)
-    df = data_processing.numpy_to_df(data,config)
+    df = data_processing.numpy_to_df(data)
     return df
 
 def process(data_path, config):
@@ -63,7 +63,7 @@ def process(data_path, config):
     return train_set, test_set, number_of_columns, normalization_features
 
 def renormalize(data,true_min_list,feature_range_list,config):
-    return data_processing.renormalize_func(data,true_min_list,feature_range_list,config)
+    return data_processing.renormalize_func(data,true_min_list,feature_range_list)
 
 def train(model,number_of_columns,train_set,test_set,project_path,config):
     return training.train(model, number_of_columns, train_set, test_set, project_path, config)
@@ -102,7 +102,10 @@ def compress(number_of_columns,model_path,input_path,config):
 def decompress(number_of_columns,model_path, input_path, config):
     # Initialise and load the model correctly.
     ModelObject = data_processing.initialise_model(config=config)
-    model = data_processing.load_model(ModelObject, model_path = model_path, n_features=number_of_columns, z_dim = config["latent_space_size"])
+    model = data_processing.load_model(ModelObject,
+                                       model_path=model_path,
+                                       n_features=number_of_columns,
+                                       z_dim = config["latent_space_size"])
 
     # Load the data & convert to tensor
     data = data_loader(input_path, config)

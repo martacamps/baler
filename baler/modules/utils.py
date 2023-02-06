@@ -39,7 +39,7 @@ def sparse_loss_function_L1(model_children, true_data, reconstructed_data, reg_p
     values = true_data
     if validate == False:
         for i in range(len(model_children)):
-            values = ((model_children[i](values)))
+            values = (model_children[i](values))
             l1_loss += torch.mean(torch.abs(values))
 
         loss = mse_loss + reg_param * l1_loss
@@ -113,5 +113,6 @@ class LRScheduler():
         self.lr_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(self.optimizer, mode='min', patience=self.patience,
                                                                     factor=self.factor, min_lr = self.min_lr, verbose = True)
     def __call__(self, val_loss):
+        print(f'Learning rate reduced by a factor of {factor}')
         self.lr_scheduler.step(val_loss)
 

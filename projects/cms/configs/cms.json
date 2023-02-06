@@ -12,7 +12,7 @@
     "RHO" : 0.05,
     "lr" : 1e-3,
     "batch_size" : 512,
-    "save_as_root" : true,
+    "save_as_root" : false,
     "cleared_column_names":["pt","eta","phi","m","EmEnergy","HadEnergy","InvisEnergy","AuxilEnergy"],
     "test_size" : 0.15,
     "Branch" : "Events",

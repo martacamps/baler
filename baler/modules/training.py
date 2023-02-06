@@ -54,8 +54,8 @@ def validate(model, test_dl, test_ds,regular_param,l1=True):
             x, _ = data
             reconstructions = model(x)
             if l1 == True:
-                loss, mse, l1_loss = utils.sparse_loss_function_L1(model_children=model_children, true_data=x,reg_param=regular_param,
-                                                    reconstructed_data=reconstructions, validate=False)
+                loss = utils.sparse_loss_function_L1(model_children=model_children, true_data=x,reg_param=regular_param,
+                                                    reconstructed_data=reconstructions, validate=True)
                 running_loss += loss.item()
 
 

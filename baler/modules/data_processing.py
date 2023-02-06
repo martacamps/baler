@@ -118,3 +118,34 @@ def renormalize_func(norm_data,min_list,range_list,config):
 
 def get_columns(df):
     return list(df.columns)
+
+def RMS_function(response_norm):
+    square=np.square(response_norm)
+    MS = square.mean()
+    RMS = np.sqrt(MS)
+    return RMS
+
+def get_chi_square_statistic(observed, expected):
+    observed = observed.replace(0,np.nan)
+    observed = observed.replace(np.inf,np.nan)
+
+    expected = expected.replace(0,np.nan)
+    expected = expected.replace(np.inf,np.nan)
+
+    observed = observed.dropna()
+    expected = expected.dropna()
+    
+    return sum([((o - e)**2)/e for o, e in zip(observed, expected)])
+
+
+def compute_E(mass, eta, pt):
+    masspt = (pt**2 + mass**2)
+    cosh = np.cosh(eta**2)
+    total = np.sqrt(masspt * cosh)
+    return pd.DataFrame({"Energy":total})
+
+
+def compute_DOF(df):
+    columns = len(list(df.columns))
+    rows = len(df)
+    return (rows-1)*(columns-1)

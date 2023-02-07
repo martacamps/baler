@@ -28,8 +28,8 @@ def loss_plot(path_to_loss_data,output_path, config):
 
     plt.figure(figsize=(10,7))
     plt.title('Loss plot')
-    plt.plot(train_loss[10:],color='orange',label="Train Loss")
-    plt.plot(val_loss[10:],color='red',label="Validation Loss")
+    plt.plot(train_loss,color='orange',label="Train Loss")
+    plt.plot(val_loss,color='red',label="Validation Loss")
     for i in range(len(conf_list)):
         plt.plot([],[], ' ',label=str_list[i] + ' ' + str(conf_list[i]))
     plt.xlabel('Epochs')
@@ -45,7 +45,6 @@ def plot(before_path,after_path):
     with open(after_path, 'rb') as handle:
         after = pickle.load(handle)
     
-    before = np.array(before)
 
 
     # Added because plotting is not supported for non-DataFrame objects yet. 
@@ -109,7 +108,7 @@ def plot(before_path,after_path):
 #            step = diff/100
             #counts_before, bins_before = np.histogram(before[column],bins=np.arange(minimum,maximum,step))
             counts_before, bins_before = np.histogram(before[column],bins=np.arange(-200,500,1))
-            ax1.hist(bins_before[:-1], bins_before, weights=counts_before, label='Before')
+            #ax1.hist(bins_before[:-1], bins_before, weights=counts_before, label='Before')
             #counts_after, bins_after = np.histogram(after[column],bins=np.arange(minimum,maximum,step))
             counts_after, bins_after = np.histogram(after[column],bins=np.arange(-200,500,1))
             ax1.hist(bins_after[:-1], bins_after, weights=counts_after, label='After',histtype='step')
@@ -117,7 +116,7 @@ def plot(before_path,after_path):
             ax1.set_title(f"{column} Distribution")
             ax1.set_xlabel(column, ha='right', x=1.0)
             ax1.set_ylabel("Counts", ha='right', y=1.0)
-            ax1.set_yscale('log')
+            #ax1.set_yscale('log')
             ax1.legend(loc="best")
 #            minimum = min(response[column])
 #            maximum = max(response[column])

@@ -1,8 +1,8 @@
 {
-    "epochs" : 3,
-    "model_name" : "george_SAE",
+    "epochs" : 500,
+    "model_name" : "george_SAE_BN",
     "early_stopping": true,
-    "lr_scheduler":false,
+    "lr_scheduler":true,
     "custom_norm" : false,
     "l1" : true,
     "PCA": false,

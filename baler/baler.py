@@ -33,11 +33,11 @@ def main():
         #helper.to_pickle(test_data_renorm, output_path+'before.pickle')
         #helper.to_pickle(reconstructed_data_renorm, output_path+'after.pickle')
         normalization_features.to_csv(output_path+'cms_normalization_features.csv')
-        helper.model_saver(trained_model,output_path+'current_model.pt')
+        helper.model_saver(trained_model,output_path+'current_model_BN_again.pt')
 
     elif mode == "plot":
         helper.plot(input_path, output_path)
-        helper.loss_plotter("projects/cms/output/loss_data.csv",output_path,config)
+        helper.loss_plotter("projects/cms/output/Manch/loss_data.csv",output_path,config)
 
     elif mode == "compress":
         print("Compressing...")
@@ -83,7 +83,17 @@ def main():
 
     elif mode == "info":
         print(" ========================== \n This is a mode for testing \n ========================== ")
-        
+
+        train_set_norm, test_set_norm, number_of_columns, normalization_features, full_data, not_norm = helper.process(input_path, config)
+        print(not_norm)
+
+        norm = helper.normalize(not_norm,config)
+        print(norm)
+        normalization_features = pd.read_csv(output_path + 'cms_normalization_features.csv')
+        renorm = helper.renormalize(norm,normalization_features["True min"],normalization_features["Feature Range"],config)    
+        print(renorm)
+        print((not_norm - renorm)['eta'])
+        exit()    
         pre_compression = "projects/cms/output/cleandata_pre_comp.pickle"
         compressed = "projects/cms/output/compressed.pickle"
         decompressed = "projects/cms/output/decompressed.pickle"

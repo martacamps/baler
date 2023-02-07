@@ -5,8 +5,9 @@ from tqdm import tqdm
 import time
 import pandas as pd
 
-def fit(model, train_dl, train_ds, regular_param, optimizer, RHO, l1=True):
+def fit(model, train_dl, train_ds, regular_param, optimizer, RHO, config,l1=True):
     print('Training')
+    bs = config['batch_size']
     model.train()
     running_loss = 0.0
     counter = 0
@@ -24,6 +25,7 @@ def fit(model, train_dl, train_ds, regular_param, optimizer, RHO, l1=True):
         if l1 == True:
             loss, mse_loss, l1_loss = utils.sparse_loss_function_L1(model_children=model_children, true_data=x,reg_param=regular_param,
                                                                     reconstructed_data=reconstructions, validate=False)
+            #print(mse_loss)
         else:
             # Implement KL here
             break
@@ -111,7 +113,7 @@ def train(model,number_of_columns, train_data, test_data, parent_path, config):
     for epoch in range(epochs):
         print(f"Epoch {epoch + 1} of {epochs}")
         train_epoch_loss,mse_loss_fit1,regularizer_loss_fit1, model_from_fit = fit(model=model, train_dl=train_dl, train_ds=train_ds,
-                                                                                    optimizer=optimizer, RHO=RHO, regular_param=reg_param, l1=l1)
+                                                                                    optimizer=optimizer, RHO=RHO, regular_param=reg_param, l1=l1,config=config)
 
         val_epoch_loss = validate(model=model_from_fit, test_dl=valid_dl,
                                 test_ds=valid_ds, regular_param=reg_param, l1 = l1)

@@ -222,5 +222,3 @@ class george_SAE_Dropout(nn.Module):
             l1_loss += torch.mean(torch.abs(values))
         loss = mse_loss + reg_param * l1_loss
         return loss
-
-# hello

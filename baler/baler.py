@@ -27,6 +27,7 @@ def perform_training(config, project_path):
     train_set, test_set, number_of_columns, normalization_features = helper.process(
         config["input_path"], config
     )
+    print('test print')
     train_set_norm = helper.normalize(train_set, config)
     test_set_norm = helper.normalize(test_set, config)
 

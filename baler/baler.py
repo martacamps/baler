@@ -41,7 +41,6 @@ def perform_training(config, project_path):
         config.test_size,
         config.energy_conversion,
     )
-    print('test print')
     train_set_norm = helper.normalize(train_set, config)
     test_set_norm = helper.normalize(test_set, config)
 

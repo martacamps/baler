@@ -36,13 +36,9 @@ def perform_training(config, project_path):
         config.test_size,
         config.energy_conversion,
     )
-
-    try:
-        config.latent_space_size = int(number_of_columns // config.compression_ratio)
-        config.number_of_columns = number_of_columns
-    except AttributeError:
-        print(config.latent_space_size, config.number_of_columns)
-        assert number_of_columns == config.number_of_columns
+    print('test print')
+    train_set_norm = helper.normalize(train_set, config)
+    test_set_norm = helper.normalize(test_set, config)
 
     device = helper.get_device()
 

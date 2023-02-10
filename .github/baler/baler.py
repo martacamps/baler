@@ -36,32 +36,32 @@ def perform_training(config, project_path):
     )
 
     output_path = project_path + "training/"
-    test_data_tensor, reconstructed_data_tensor, model = helper.train(
+    test_data_tensor, reconstructed_data_tensor = helper.train(
         model, number_of_columns, train_set_norm, test_set_norm, output_path, config
     )
-    # test_data = helper.detach(test_data_tensor)
-    # reconstructed_data = helper.detach(reconstructed_data_tensor)
+    test_data = helper.detach(test_data_tensor)
+    reconstructed_data = helper.detach(reconstructed_data_tensor)
 
-    # print("Un-normalzing...")
-    # start = time.time()
-    # test_data_renorm = helper.renormalize(
-    #     test_data,
-    #     normalization_features["True min"],
-    #     normalization_features["Feature Range"],
-    #     config,
-    # )
-    # reconstructed_data_renorm = helper.renormalize(
-    #     reconstructed_data,
-    #     normalization_features["True min"],
-    #     normalization_features["Feature Range"],
-    #     config,
-    # )
-    # end = time.time()
-    # print("Un-normalization took:", f"{(end - start) / 60:.3} minutes")
+    print("Un-normalzing...")
+    start = time.time()
+    test_data_renorm = helper.renormalize(
+        test_data,
+        normalization_features["True min"],
+        normalization_features["Feature Range"],
+        config,
+    )
+    reconstructed_data_renorm = helper.renormalize(
+        reconstructed_data,
+        normalization_features["True min"],
+        normalization_features["Feature Range"],
+        config,
+    )
+    end = time.time()
+    print("Un-normalization took:", f"{(end - start) / 60:.3} minutes")
 
-    # helper.to_pickle(test_data_renorm, output_path + "before.pickle")
-    # helper.to_pickle(reconstructed_data_renorm, output_path + "after.pickle")
-    # normalization_features.to_csv(project_path + "model/cms_normalization_features.csv")
+    helper.to_pickle(test_data_renorm, output_path + "before.pickle")
+    helper.to_pickle(reconstructed_data_renorm, output_path + "after.pickle")
+    normalization_features.to_csv(project_path + "model/cms_normalization_features.csv")
     helper.model_saver(model, project_path + "model/model.pt")
 
 
@@ -108,16 +108,16 @@ def perform_decompression(config, project_path):
 
     # Converting back to numpyarray
     decompressed = helper.detach(decompressed)
-    # normalization_features = pd.read_csv(
-    #     project_path + "model/cms_normalization_features.csv"
-    # )
+    normalization_features = pd.read_csv(
+        project_path + "model/cms_normalization_features.csv"
+    )
 
-    # decompressed = helper.renormalize(
-    #     decompressed,
-    #     normalization_features["True min"],
-    #     normalization_features["Feature Range"],
-    #     config,
-    # )
+    decompressed = helper.renormalize(
+        decompressed,
+        normalization_features["True min"],
+        normalization_features["Feature Range"],
+        config,
+    )
     end = time.time()
     print("Decompression took:", f"{(end - start) / 60:.3} minutes")
 

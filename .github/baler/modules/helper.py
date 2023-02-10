@@ -90,7 +90,7 @@ def process(data_path, config):
     normalization_features = data_processing.find_minmax(df)
     df = normalize(df, config)
     train_set, test_set = data_processing.split(
-        df, test_size=config["test_size"], random_state=None
+        df, test_size=config["test_size"], random_state=1
     )
     number_of_columns = len(data_processing.get_columns(df))
     assert (
@@ -132,7 +132,6 @@ def detach(tensor):
 
 
 def compress(number_of_columns, model_path, input_path, config):
-    device = get_device()
     # Initialise and load the model correctly.
     ModelObject = data_processing.initialise_model(config=config)
     model = data_processing.load_model(
@@ -143,20 +142,18 @@ def compress(number_of_columns, model_path, input_path, config):
     )
 
     # Give the encoding function the correct input as tensor
-    # data = data_loader(input_path, config)
-    # data = data_processing.clean_data(data, config)
-    data_tensor = torch.ones([1000,1,101,250], dtype=torch.float32, device=device)
-    data_before = numpy.array(data_tensor)
+    data = data_loader(input_path, config)
+    data = data_processing.clean_data(data, config)
+    data_before = numpy.array(data)
 
-    # data = normalize(data, config)
-    # data_tensor = numpy_to_tensor(data).to(device)
+    data = normalize(data, config)
+    data_tensor = numpy_to_tensor(data).to(model.device)
 
     compressed = model.encode(data_tensor)
     return compressed, data_before
 
 
 def decompress(number_of_columns, model_path, input_path, config):
-    device = get_device()
     # Initialise and load the model correctly.
     ModelObject = data_processing.initialise_model(config=config)
     model = data_processing.load_model(
@@ -168,7 +165,7 @@ def decompress(number_of_columns, model_path, input_path, config):
 
     # Load the data & convert to tensor
     data = data_loader(input_path, config)
-    data_tensor = numpy_to_tensor(data).to(device)
+    data_tensor = numpy_to_tensor(data).to(model.device)
 
     decompressed = model.decode(data_tensor)
     return decompressed

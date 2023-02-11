@@ -225,7 +225,7 @@ class george_SAE_Dropout(nn.Module):
 class ConvAE(nn.Module):
         def __init__(self, n_features, z_dim, *args, **kwargs):
             super(ConvAE, self).__init__(*args, **kwargs)
-            self.q_z_output_dim = 66
+            self.q_z_output_dim = 200
             # Encoder
             # Conv Layers
             self.q_z_conv = nn.Sequential(
@@ -241,9 +241,9 @@ class ConvAE(nn.Module):
                   ) 
             # Linear layers
             self.q_z_lin = nn.Sequential( 
-                  nn.Linear(43200, self.q_z_output_dim), 
+                  nn.Linear(42720, self.q_z_output_dim), 
                   nn.ReLU(), 
-                  nn.BatchNorm1d(self.q_z_output_dim),
+                  # nn.BatchNorm1d(self.q_z_output_dim),
                   nn.Linear(self.q_z_output_dim, z_dim),
                   nn.ReLU(),
                   )
@@ -251,10 +251,10 @@ class ConvAE(nn.Module):
             self.p_x_lin = nn.Sequential(
                   nn.Linear(z_dim, self.q_z_output_dim),
                   nn.ReLU(),
-                  nn.BatchNorm1d(self.q_z_output_dim),
-                  nn.Linear(self.q_z_output_dim, 43200),
+                  # nn.BatchNorm1d(self.q_z_output_dim),
+                  nn.Linear(self.q_z_output_dim, 42720),
                   nn.ReLU(),
-                  nn.BatchNorm1d(43200) 
+                  # nn.BatchNorm1d(42720) 
                   )
             # Conv Layers
             self.p_x_conv = nn.Sequential(
@@ -280,7 +280,7 @@ class ConvAE(nn.Module):
             # dense
             out = self.p_x_lin(z)
             # reshape
-            out = out.view(out.size(0), 2, 90, 240)  
+            out = out.view(out.size(0), 2, 89, 240)  
             # DeConv/UnConv?
             out = self.p_x_conv(out)
             return out

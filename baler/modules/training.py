@@ -84,14 +84,14 @@ def train(model, variables, train_data, test_data, parent_path, config):
     model = model.to(device)
 
     # Converting data to tensors
-    # train_ds = torch.tensor(train_data.values, dtype=torch.float64, device=device)
-    # valid_ds = torch.tensor(train_data.values, dtype=torch.float64, device=device)
+    train_ds = torch.tensor(train_data.values, dtype=torch.float32, device=device).view(1,1,100,250)
+    valid_ds = torch.tensor(train_data.values, dtype=torch.float32, device=device).view(1,1,100,250)
 
 
     ########################################################################################################
 
-    train_ds = torch.ones([1000,1,101,250], dtype=torch.float32, device=device)
-    valid_ds = torch.ones([1000,1,101,250], dtype=torch.float32, device=device)
+    # train_ds = torch.ones([1000,1,101,250], dtype=torch.float32, device=device)
+    # valid_ds = torch.ones([1000,1,101,250], dtype=torch.float32, device=device)
 
     ########################################################################################################
 

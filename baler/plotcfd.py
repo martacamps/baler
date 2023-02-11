@@ -1,26 +1,29 @@
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 import pickle
 
 
-pickle_file = "../../data/cfd/cfd.pickle"
+pickle_file = "../data/cfd/cfd.pickle"
 
-decompressed_cfd = "../../projects/cfd/decompressed_output/decompressed.pickle"
+decompressed_cfd = "../projects/CFDcompression/decompressed_output/decompressed.pickle"
 
 
 def pickle_to_df(file):
     # From pickle to df:
     with open(file, "rb") as handle:
         data = pickle.load(handle)
-        df = pd.DataFrame(data)
-        return df
+
+        return data
 
 
 data = pickle_to_df(pickle_file)
+data = pd.DataFrame(data).tail(-1)
 data = data.astype(dtype="float32")
 
 data_decompressed = pickle_to_df(decompressed_cfd)
+data_decompressed = pd.DataFrame(data_decompressed.reshape((100,250)))
 data_decompressed = data_decompressed.astype(dtype="float32")
 
 diff = data_decompressed - data
@@ -46,5 +49,5 @@ plt.ylim(0, 100)
 divider_3 = make_axes_locatable(axs[2])
 cax_3 = divider_3.append_axes("right", size="5%", pad=0.05)
 plt.colorbar(im3, cax=cax_3, shrink=0.1)
-plt.show()
+fig.savefig('../projects/CFDcompression/decompressed_output/CFD_plot.png')
 exit()

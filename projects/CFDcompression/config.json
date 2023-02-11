@@ -1,8 +1,8 @@
 
 {
-    "epochs" : 20,
+    "epochs" : 200,
     "early_stopping": true,
-    "lr_scheduler" : false,
+    "lr_scheduler" : true,
     "patience" : 100,
     "min_delta" : 0,
     "model_name" : "ConvAE",
@@ -18,7 +18,7 @@
     "Branch" : "Events",
     "Collection": "recoGenJets_slimmedGenJets__PAT.",
     "Objects": "recoGenJets_slimmedGenJets__PAT.obj",
-    "number_of_columns" : 8,
+    "number_of_columns" : 250,
     "latent_space_size" : 12500,
     "dropped_variables":    [
         "recoGenJets_slimmedGenJets__PAT.obj.m_state.vertex_.fCoordinates.fX",

@@ -81,6 +81,7 @@ def load_data(data_path, config):
         df = tree.arrays(Names, library="pd")
     elif ".pickle" in data_path[-8:]:
         df = pd.read_pickle(data_path)
+        df = pd.DataFrame(df)
 
     return df
 

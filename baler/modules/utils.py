@@ -2,11 +2,13 @@ import torch
 import torch.nn as nn
 from tqdm import tqdm
 
+import torch.utils.data
+from torch.nn import functional as F
+from tqdm import tqdm
+
 ###############################################
 factor = 0.5
 min_lr = 1e-6
-
-
 ###############################################
 
 
@@ -28,6 +30,56 @@ def new_loss_func(model, reconstructed_data, true_data, reg_param, val):
     else:
         loss = mse_loss
         return loss
+
+
+def Georges_sparse_loss_function_L1(
+    model_children, true_data, reconstructed_data, reg_param=None, evaluate=False
+):
+    mse = nn.MSELoss()
+    mse_loss = mse(reconstructed_data, true_data)
+
+    if not evaluate:
+        l1_loss = 0
+        values = true_data
+        for i in range(len(model_children)):
+            values = F.relu((model_children[i](values)))
+            l1_loss += torch.mean(torch.abs(values))
+
+        loss = mse_loss + reg_param * l1_loss
+    else:
+        loss = mse_loss
+
+    return loss
+
+
+def kl_divergence(rho, rho_hat):
+    # sigmoid because we need the probability distributions
+    rho_hat = torch.mean(torch.sigmoid(rho_hat), 1)
+    rho = torch.tensor([rho] * len(rho_hat))
+    return torch.sum(
+        rho * torch.log(rho / rho_hat)
+        + (1 - rho) * torch.log((1 - rho) / (1 - rho_hat))
+    )
+
+
+def sparse_loss_function_KL(
+    rho, model_children, true_data, reconstructed_data, reg_param=None, evaluate=False
+):
+    mse = nn.MSELoss()
+    mse_loss = mse(reconstructed_data, true_data)
+
+    if not evaluate:
+        kl_loss = 0
+        values = true_data
+        for i in range(len(model_children)):
+            values = model_children[i](values)
+            kl_loss += kl_divergence(rho, values)
+
+        loss = mse_loss + reg_param * kl_loss
+    else:
+        loss = mse_loss
+
+    return loss
 
 
 def sparse_loss_function_L1(

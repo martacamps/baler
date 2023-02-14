@@ -135,6 +135,7 @@ def process(data_path, config):
     df = data_processing.clean_data(df, config)
     normalization_features = data_processing.find_minmax(df)
     df = normalize(df, config)
+    df = df.astype("float64")
     train_set, test_set = data_processing.split(
         df, test_size=config["test_size"], random_state=1
     )
@@ -149,9 +150,9 @@ def renormalize(data, true_min_list, feature_range_list):
     return data_processing.renormalize_func(data, true_min_list, feature_range_list)
 
 
-def train(model, number_of_columns, train_set, test_set, project_path, config):
+def train(model, number_of_columns, train_set, test_set, project_path, config, device):
     return training.train(
-        model, number_of_columns, train_set, test_set, project_path, config
+        model, number_of_columns, train_set, test_set, project_path, config, device
     )
 
 

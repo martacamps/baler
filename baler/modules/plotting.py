@@ -113,7 +113,7 @@ def plot(output_path, before_path, after_path):
                 histtype="step",
             )
             ax1.set_title(f"{column} Distribution")
-            ax1.set_xlabel("column", ha="right", x=1.0)
+            ax1.set_xlabel(f"{column}", ha="right", x=1.0)
             ax1.set_xticks([])
             ax1.set_ylabel("Counts", ha="right", y=1.0)
             ax1.legend(loc="best")

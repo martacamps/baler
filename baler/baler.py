@@ -38,21 +38,27 @@ def perform_training(config, project_path):
     )
 
     output_path = project_path + "training/"
-    test_data_tensor, reconstructed_data_tensor = helper.train(
-        model, number_of_columns, train_set_norm, test_set_norm, output_path, config
+    data, pred = helper.train(
+        model,
+        number_of_columns,
+        train_set_norm,
+        test_set_norm,
+        output_path,
+        config,
+        device,
     )
-    test_data = helper.detach(test_data_tensor)
-    reconstructed_data = helper.detach(reconstructed_data_tensor)
+    # test_data = helper.detach(test_data_tensor)
+    # reconstructed_data = helper.detach(reconstructed_data_tensor)
 
     print("Un-normalzing...")
     start = time.time()
     test_data_renorm = helper.renormalize(
-        test_data,
+        data,
         normalization_features["True min"],
         normalization_features["Feature Range"],
     )
     reconstructed_data_renorm = helper.renormalize(
-        reconstructed_data,
+        pred,
         normalization_features["True min"],
         normalization_features["Feature Range"],
     )
@@ -61,6 +67,8 @@ def perform_training(config, project_path):
 
     helper.to_pickle(test_data_renorm, output_path + "before.pickle")
     helper.to_pickle(reconstructed_data_renorm, output_path + "after.pickle")
+    helper.to_pickle(data, output_path + "before_norm.pickle")
+    helper.to_pickle(pred, output_path + "after_norm.pickle")
     normalization_features.to_csv(project_path + "model/cms_normalization_features.csv")
     helper.model_saver(model, project_path + "model/model.pt")
 

@@ -95,7 +95,7 @@ def load_data(data_path: str, config):
 
 
 def clean_data(df, config):
-    df = df.drop(columns=config["dropped_variables"])
+    df = df.drop(columns=config["dropped_variables"], axis=1)
     df = df.dropna()
     global cleared_column_names
     cleared_column_names = list(df)

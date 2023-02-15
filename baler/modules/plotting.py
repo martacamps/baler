@@ -58,14 +58,30 @@ def plot(output_path, before_path, after_path):
     # Added because plotting is not supported for non-DataFrame objects yet.
     if isinstance(before, pd.DataFrame) == False:
         names = [
-            "pt",
-            "eta",
-            "phi",
-            "m",
-            "EmEnergy",
-            "HadEnergy",
-            "InvisEnergy",
-            "AuxilEnergy",
+            "pt_",
+            "eta_",
+            "phi_",
+            "mass_",
+            "mJetArea",
+            "mChargedHadronEnergy",
+            "mNeutralHadronEnergy",
+            "mPhotonEnergy",
+            "mHFHadronEnergy",
+            "mHFEMEnergy",
+            "mChargedHadronMultiplicity",
+            "mNeutralHadronMultiplicity",
+            "mPhotonMultiplicity",
+            "mElectronMultiplicity",
+            "mHFHadronMultiplicity",
+            "mHFEMMultiplicity",
+            "mNeutralEmEnergy",
+            "mChargedMultiplicity",
+            "mNeutralMultiplicity",
+            "mChargedEmEnergy",
+            "mChargedMuEnergy",
+            "mMuonEnergy",
+            "mMuonMultiplicity",
+            "mElectronEnergy",
         ]
         before = pd.DataFrame(before, columns=names)
         after = pd.DataFrame(after, columns=names)
@@ -83,7 +99,7 @@ def plot(output_path, before_path, after_path):
             print(f"{index} of {number_of_columns}")
 
             response = (after - before) / before
-            response_list = list(filter(lambda p: -20 <= p <= 20, response[column]))
+            response_list = list(filter(lambda p: -2 <= p <= 2, response[column]))
             response_RMS = data_processing.RMS_function(response_norm=response_list)
             #            minimum = int(min(before[column]+after[column]))
             #            maximum = int(max(before[column]+after[column]))

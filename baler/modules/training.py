@@ -86,7 +86,7 @@ def train(model, input_dim, train_data, test_data, project_path, config, device)
     model_children = list(sae.children())
 
     # Constructs a tensor object of the data and wraps them in a TensorDataset object.
-    print(type(train_data), type(test_data))
+
     train_ds = TensorDataset(
         torch.tensor(train_data.values, dtype=torch.float64),
         torch.tensor(train_data.values, dtype=torch.float64),
@@ -108,6 +108,12 @@ def train(model, input_dim, train_data, test_data, project_path, config, device)
         early_stopping = utils.EarlyStopping(
             patience=config["patience"], min_delta=config["min_delta"]
         )  # Changes to patience & min_delta can be made in configs
+
+    if config["lr_scheduler"] == True:
+        lr_scheduler = utils.LRScheduler(
+            optimizer=optimizer, patience=config["patience"]
+        )
+
     # train and validate the autoencoder neural network
     train_loss = []
     val_loss = []
@@ -127,9 +133,11 @@ def train(model, input_dim, train_data, test_data, project_path, config, device)
         val_epoch_loss = validate(
             model=sae, test_dl=valid_dl, test_ds=valid_ds, model_children=model_children
         )
-        print(type(val_epoch_loss), type(train_epoch_loss))
         train_loss.append(train_epoch_loss)
         val_loss.append(val_epoch_loss)
+        if config["lr_scheduler"] == True:
+            lr_scheduler(train_epoch_loss)
+
         if config["early_stopping"] == True:
             early_stopping(val_epoch_loss)
             if early_stopping.early_stop:

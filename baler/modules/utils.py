@@ -33,7 +33,7 @@ def new_loss_func(model, reconstructed_data, true_data, reg_param, val):
 
 
 def Georges_sparse_loss_function_L1(
-    model_children, true_data, reconstructed_data, reg_param=None, evaluate=False
+    model_children, true_data, reconstructed_data, reg_param, evaluate=False
 ):
     mse = nn.MSELoss()
     mse_loss = mse(reconstructed_data, true_data)

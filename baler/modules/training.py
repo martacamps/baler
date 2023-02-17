@@ -45,10 +45,10 @@ def fit(model, train_dl, train_ds, model_children, regular_param, optimizer, RHO
     epoch_loss = running_loss / counter
     print(f" Train Loss: {loss:.6f}")
 
-    return epoch_loss
+    return epoch_loss, model
 
 
-def validate(model, test_dl, test_ds, model_children):
+def validate(model, test_dl, test_ds, model_children, reg_param):
     print("Validating")
     model.eval()
     running_loss = 0.0
@@ -64,7 +64,8 @@ def validate(model, test_dl, test_ds, model_children):
                 model_children=model_children,
                 true_data=x,
                 reconstructed_data=reconstructions,
-                evaluate=True,
+                evaluate=False,
+                reg_param=reg_param,
             )
             running_loss += loss.item()
 
@@ -120,7 +121,7 @@ def train(model, input_dim, train_data, test_data, project_path, config, device)
     start = time.time()
     for epoch in range(epochs):
         print(f"Epoch {epoch + 1} of {epochs}")
-        train_epoch_loss = fit(
+        train_epoch_loss, trained_model = fit(
             model=sae,
             train_dl=train_dl,
             train_ds=train_ds,
@@ -131,7 +132,11 @@ def train(model, input_dim, train_data, test_data, project_path, config, device)
             l1=l1,
         )
         val_epoch_loss = validate(
-            model=sae, test_dl=valid_dl, test_ds=valid_ds, model_children=model_children
+            model=trained_model,
+            test_dl=valid_dl,
+            test_ds=valid_ds,
+            model_children=model_children,
+            reg_param=reg_param,
         )
         train_loss.append(train_epoch_loss)
         val_loss.append(val_epoch_loss)
@@ -152,7 +157,7 @@ def train(model, input_dim, train_data, test_data, project_path, config, device)
 
     data = torch.tensor(test_data.values, dtype=torch.float64)
 
-    pred = sae(data)
+    pred = trained_model(data)
     pred = pred.detach().numpy()
     data = data.detach().numpy()
 

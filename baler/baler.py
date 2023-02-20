@@ -38,7 +38,7 @@ def perform_training(config, project_path):
     )
 
     output_path = project_path + "training/"
-    data, pred = helper.train(
+    data, pred, trained_model = helper.train(
         model,
         number_of_columns,
         train_set_norm,
@@ -70,7 +70,7 @@ def perform_training(config, project_path):
     helper.to_pickle(data, output_path + "before_norm.pickle")
     helper.to_pickle(pred, output_path + "after_norm.pickle")
     normalization_features.to_csv(project_path + "model/cms_normalization_features.csv")
-    helper.model_saver(model, project_path + "model/model.pt")
+    helper.model_saver(trained_model, project_path + "model/model.pt")
 
 
 def perform_plotting(project_path, config):

@@ -1,6 +1,6 @@
 {
-    "epochs": 500,
-    "early_stopping": true,
+    "epochs": 200,
+    "early_stopping": false,
     "lr_scheduler": false,
     "patience": 50,
     "min_delta": 0,

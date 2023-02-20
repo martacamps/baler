@@ -161,4 +161,4 @@ def train(model, input_dim, train_data, test_data, project_path, config, device)
     pred = pred.detach().numpy()
     data = data.detach().numpy()
 
-    return data, pred
+    return data, pred, trained_model

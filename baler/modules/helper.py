@@ -87,16 +87,16 @@ def normalize(data, config):
 def process(data_path, config):
     df = data_processing.load_data(data_path, config)
     # df = data_processing.clean_data(df, config)
-    normalization_features = data_processing.find_minmax(df)
-    # df = normalize(df, config)
-    train_set, test_set = data_processing.split(
-        df, test_size=config["test_size"], random_state=None
-    )
+    # normalization_features = data_processing.find_minmax(df)
+    # # df = normalize(df, config)
+    # train_set, test_set = data_processing.split(
+    #     df, test_size=config["test_size"], random_state=None
+    # )
     number_of_columns = len(data_processing.get_columns(df))
     assert (
         number_of_columns == config["number_of_columns"]
     ), f"The number of columns of dataframe is {number_of_columns}, config states {config['number_of_columns']}."
-    return train_set, test_set, number_of_columns, normalization_features
+    return df, number_of_columns#train_set, test_set, normalization_features
 
 
 def renormalize(data, true_min_list, feature_range_list, config):
@@ -144,14 +144,14 @@ def compress(number_of_columns, model_path, input_path, config):
 
     # Give the encoding function the correct input as tensor
     data = data_loader(input_path, config)
-    data = data.tail(-1)
+    data = data.iloc[51:,50:100]
     # data = data_processing.clean_data(data, config)
     # data_tensor = torch.ones([1000,1,101,250], dtype=torch.float32, device=device)
     data_before = numpy.array(data)
 
     # data = normalize(data, config)
     print(data.shape)
-    data_tensor = torch.tensor(data.values, dtype=torch.float32, device=device).view(1,1,100,250)
+    data_tensor = torch.tensor(data.values, dtype=torch.float32, device=device).view(1,1,50,50)
 
     compressed = model.encode(data_tensor)
     return compressed, data_before

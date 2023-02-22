@@ -24,11 +24,12 @@ def main():
 
 
 def perform_training(config, project_path):
-    train_set, test_set, number_of_columns, normalization_features = helper.process(
+    #train_set, test_set, number_of_columns, normalization_features 
+    train_set, number_of_columns = helper.process(
         config["input_path"], config
     )
     train_set_norm = train_set #helper.normalize(train_set, config)
-    test_set_norm = test_set #helper.normalize(test_set, config)
+    test_set_norm = train_set #helper.normalize(test_set, config)
 
     ModelObject = helper.model_init(config=config)
     model = ModelObject(

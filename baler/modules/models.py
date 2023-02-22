@@ -222,56 +222,61 @@ class george_SAE_Dropout(nn.Module):
         return loss
 
 
-class ConvAE(nn.Module):
+class Conv_AE(nn.Module):
         def __init__(self, n_features, z_dim, *args, **kwargs):
-            super(ConvAE, self).__init__(*args, **kwargs)
-            self.q_z_output_dim = 200
+            super(Conv_AE, self).__init__(*args, **kwargs)
+            self.q_z_mid_dim = 2000
+            self.q_z_output_dim = 72128
             # Encoder
             # Conv Layers
             self.q_z_conv = nn.Sequential(
-                  nn.Conv2d(1, 8, kernel_size=(2,5), stride=(1), padding=(0)),
-                  nn.BatchNorm2d(8),
+                  nn.Conv2d(1, 8, kernel_size=(2,5), stride=(1), padding=(1)),
+                  #nn.BatchNorm2d(8),
                   nn.ReLU(),
-                  nn.Conv2d(8, 4, kernel_size=(5,4), stride=(1), padding=(0)),
-                  nn.BatchNorm2d(4),
+                  nn.Conv2d(8, 16, kernel_size=(3), stride=(1), padding=(1)),
+                  nn.BatchNorm2d(16),
                   nn.ReLU(),
-                  nn.Conv2d(4, 2, kernel_size=(7,4), stride=(1), padding=(0)),
-                  nn.BatchNorm2d(2),
+                  nn.Conv2d(16, 32, kernel_size=(3), stride=(1), padding=(0)),
+                  #nn.BatchNorm2d(32),
                   nn.ReLU()
                   ) 
+            # Flatten
+            self.flatten = nn.Flatten(start_dim=1)
             # Linear layers
             self.q_z_lin = nn.Sequential( 
-                  nn.Linear(42720, self.q_z_output_dim), 
+                  nn.Linear(self.q_z_output_dim, self.q_z_mid_dim), 
                   nn.ReLU(), 
                   # nn.BatchNorm1d(self.q_z_output_dim),
-                  nn.Linear(self.q_z_output_dim, z_dim),
+                  nn.Linear(self.q_z_mid_dim, z_dim),
                   nn.ReLU(),
                   )
+
             # Decoder
             self.p_x_lin = nn.Sequential(
-                  nn.Linear(z_dim, self.q_z_output_dim),
+                  nn.Linear(z_dim, self.q_z_mid_dim),
                   nn.ReLU(),
                   # nn.BatchNorm1d(self.q_z_output_dim),
-                  nn.Linear(self.q_z_output_dim, 42720),
+                  nn.Linear(self.q_z_mid_dim, self.q_z_output_dim),
                   nn.ReLU(),
                   # nn.BatchNorm1d(42720) 
                   )
             # Conv Layers
             self.p_x_conv = nn.Sequential(
-                  nn.ConvTranspose2d(2, 4, kernel_size=(7,4), stride=(1), padding=(0)),
-                  nn.BatchNorm2d(4),
+                  nn.ConvTranspose2d(32, 16, kernel_size=(3), stride=(1), padding=(0)),
+                  nn.BatchNorm2d(16),
                   nn.ReLU(),
-                  nn.ConvTranspose2d(4, 8, kernel_size=(5,4), stride=(1), padding=(0)),
+                  nn.ConvTranspose2d(16, 8, kernel_size=(3), stride=(1), padding=(1)),
                   nn.BatchNorm2d(8),
                   nn.ReLU(),
-                  nn.ConvTranspose2d(8, 1, kernel_size=(2,5), stride=(1), padding=(0))
+                  nn.ConvTranspose2d(8, 1, kernel_size=(2,5), stride=(1), padding=(1))
                   ) 
     
         def encode(self, x):
             # Conv
             out = self.q_z_conv(x)
             # flatten
-            out = out.view(out.size(0), -1)
+            out = self.flatten(out)
+            #out = out.view(out.size(0), -1)
             # dense 
             out = self.q_z_lin(out)
             return out
@@ -280,7 +285,7 @@ class ConvAE(nn.Module):
             # dense
             out = self.p_x_lin(z)
             # reshape
-            out = out.view(out.size(0), 2, 89, 240)  
+            out = out.view(out.size(0), 32, 49, 46)  
             # DeConv/UnConv?
             out = self.p_x_conv(out)
             return out

@@ -37,7 +37,7 @@ def fit(model, train_dl, train_ds, model_children, regular_param, optimizer, RHO
 
         running_loss += loss.item()
 
-    epoch_loss = running_loss / len(train_dl)
+    epoch_loss = running_loss
     print(f"# Finished. Training Loss: {loss:.6f}")
     return epoch_loss, mse_loss, l1_loss
 
@@ -83,9 +83,11 @@ def train(model, variables, train_data, test_data, parent_path, config):
     device = helper.get_device()
     model = model.to(device)
 
+    train_data = train_data.iloc[51:,50:100]
+
     # Converting data to tensors
-    train_ds = torch.tensor(train_data.values, dtype=torch.float32, device=device).view(1,1,100,250)
-    valid_ds = torch.tensor(train_data.values, dtype=torch.float32, device=device).view(1,1,100,250)
+    train_ds = torch.tensor(train_data.values, dtype=torch.float32, device=device).view(1,1,50,50)
+    valid_ds = torch.tensor(train_data.values, dtype=torch.float32, device=device).view(1,1,50,50)
 
 
     ########################################################################################################

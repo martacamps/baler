@@ -88,14 +88,14 @@ def plot(project_path):
             response_RMS = data_processing.RMS_function(response_norm=response_list)
 
             counts_before, bins_before = np.histogram(
-                before[column], bins=np.linspace(0, 1,101)
+                before[column], bins=np.linspace(0, 1,201)
             )
             hist_before = ax1.hist(
-                bins_before[:-1], bins_before, weights=counts_before, label="Before"
+                bins_before[:-1], bins_before, weights=counts_before, label="Before",linewidth=0.0
             )
             # counts_after, bins_after = np.histogram(after[column],bins=np.arange(minimum,maximum,step))
             counts_after, bins_after = np.histogram(
-                after[column], bins=np.linspace(0, 1,101)
+                after[column], bins=np.linspace(0, 1,201)
             )
             hist_after = ax1.hist(
                 bins_after[:-1],
@@ -103,6 +103,7 @@ def plot(project_path):
                 weights=counts_after,
                 label="After",
                 histtype="step",
+                linewidth=1
             )
             ax1.set_title(f"{column} Distribution")
             ax1.set_xlabel("column", ha="right", x=1.0)
@@ -111,57 +112,41 @@ def plot(project_path):
             ax1.set_yscale("log")
             ax1.legend(loc="best")
 
-            #ax1.set_xlim(x_min-(diff/2)*0.1,x_max+abs(x_max*0.1))
+            #ax1.set_xlim(x_min-(diff/2)*0.1,x_max+abs(x_max*0.1))hahah
             ax1.set_xlim(0,1)
 
-            # Residual subplot in comparison
-            #divider = make_axes_locatable(ax1)
-            #ax3 = divider.append_axes("bottom", size="20%", pad=0.25)
-            #ax1.figure.add_axes(ax3)
-            #ax3.bar(bins_after[:-1], height=(hist_after[0] - hist_before[0])/hist_before[0])
             data_bin_centers = bins_after[:-1]+(bins_after[1:]-bins_after[:-1])/2
             ax3.scatter(data_bin_centers, (counts_after - counts_before),) # FIXME: Dividing by zero
             ax3.axhline(y=0, linewidth=0.2, color="black")
             ax3.set_ylim(-200, 200)
-            #ax3.set_ylabel("(after - before)/before")
             ax3.set_ylabel("Residual")
-            #ax3.set_xlim(x_min-abs(x_min*0.1),x_max+abs(x_max*0.1))
-
-            #            minimum = min(response[column])
-            #            maximum = max(response[column])
-            #            diff = maximum - minimum
-            #            if diff == np.inf or diff == 0:
-            #                pdf.savefig()
-            #                ax2.clear()
-            #                ax1.clear()
-            #                continue
-            #            step = diff/100
-            # counts_response, bins_response = np.histogram(response[column],bins=np.arange(minimum,maximum,step))
             counts_response, bins_response = np.histogram(
-                response[column], bins=np.arange(-2, 2, 0.1)
+                response[column], bins=np.arange(-2, 2, 0.01)
             )
             ax2.hist(
                 bins_response[:-1],
                 bins_response,
                 weights=counts_response,
                 label="Response",
+                linewidth=0.0
             )
             ax2.axvline(
                 np.mean(response_list),
                 color="k",
                 linestyle="dashed",
                 linewidth=1,
-                label=f"Mean {round(np.mean(response_list),8)}",
+                label=f"Mean {round(np.mean(response_list),4)}",
             )
-            ax2.plot([], [], " ", label=f"RMS: {round(response_RMS,8)}")
+            #ax2.plot([], [], " ", label=f"RMS: {round(response_RMS,8)}")
 
             # To have percent on the x-axis
             # formatter = mpl.ticker.FuncFormatter(to_percent)
             # ax2.xaxis.set_major_formatter(formatter)
+            legend2 = ax2.legend(ncol=1, frameon=True,facecolor="white",framealpha=0.2,fontsize='small')
+            legend2.set_title(f"RMS: {round(response_RMS,4)}")            
             ax2.set_title(f"{column} Response")
             ax2.set_xlabel(f"{column} Response", ha="right", x=1.0)
             ax2.set_ylabel("Counts", ha="right", y=1.0)
-            ax2.legend(loc="best")
 
             pdf.savefig()
             ax2.clear()

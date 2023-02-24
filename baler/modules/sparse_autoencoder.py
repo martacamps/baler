@@ -8,6 +8,8 @@ from torch.utils.data import DataLoader, TensorDataset
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 
+import numpy as np
+import random
 
 class SAE(nn.Module):
     def __init__(self, n_features=24, z_dim=15):
@@ -135,8 +137,20 @@ def validate(model, test_dl, test_ds, model_children):
     # save the reconstructed images every 5 epochs
     return epoch_loss
 
+def seed_worker(worker_id):
+    worker_seed = torch.initial_seed() % 2**32
+    np.random.seed(worker_seed)
+    random.seed(worker_seed)
 
 def train(variables, train_data, test_data, learning_rate, reg_param, RHO, l1, epochs):
+
+    random.seed(0)
+    torch.manual_seed(0)
+    np.random.seed(0)
+    torch.use_deterministic_algorithms(True)
+    g = torch.Generator()
+    g.manual_seed(0)
+
     print("running georges training")
     sae = SAE(n_features=variables, z_dim=15)
     model_children = list(sae.children())
@@ -151,8 +165,8 @@ def train(variables, train_data, test_data, learning_rate, reg_param, RHO, l1, e
 
     # Converts the TensorDataset into a DataLoader object and combines into one DataLoaders object (a basic wrapper
     # around several DataLoader objects).
-    train_dl = DataLoader(train_ds, batch_size=bs, shuffle=True)
-    valid_dl = DataLoader(valid_ds, batch_size=bs * 2)
+    train_dl = DataLoader(train_ds, batch_size=bs, shuffle=False, worker_init_fn=seed_worker, generator=g)
+    valid_dl = DataLoader(valid_ds, batch_size=bs * 2, worker_init_fn=seed_worker, generator=g)
 
     optimizer = optim.Adam(sae.parameters(), lr=learning_rate)
 
@@ -173,8 +187,8 @@ def train(variables, train_data, test_data, learning_rate, reg_param, RHO, l1, e
 
     # loss plots
     plt.figure(figsize=(10, 7))
-    plt.plot(train_loss, color='orange', label='train loss')
-    plt.plot(val_loss, color='red', label='validataion loss')
+    plt.plot(train_loss[2:], color='orange', label='train loss')
+    plt.plot(val_loss[2:], color='red', label='validataion loss')
     plt.xlabel('Epochs')
     plt.ylabel('Loss')
     plt.legend()

@@ -26,8 +26,8 @@ def loss_plot(path_to_loss_data, output_path, config):
     loss_data = pd.read_csv(path_to_loss_data)
     str_list = ["Epochs:", "Model Name:", "Reg. Param:", "lr:", "BS:"]
 
-    val_loss = loss_data["Val Loss"]
-    train_loss = loss_data["Train Loss"]
+    val_loss = loss_data["Val Loss"][1:]
+    train_loss = loss_data["Train Loss"][1:]
     conf_list = [
         len(train_loss),
         config.model_name,
@@ -38,7 +38,7 @@ def loss_plot(path_to_loss_data, output_path, config):
 
     plt.figure(figsize=(10, 7))
     plt.title("Loss plot")
-    plt.plot(train_loss, color="orange", label="Train Loss")
+    plt.plot(train_loss[1:], color="orange", label="Train Loss")
     plt.plot(val_loss, color="red", label="Validation Loss")
     for i in range(len(conf_list)):
         plt.plot([], [], " ", label=str_list[i] + " " + str(conf_list[i]))

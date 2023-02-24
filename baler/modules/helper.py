@@ -210,7 +210,6 @@ def compress(model_path, input_path, config):
         z_dim=config.latent_space_size,
     )
     data_tensor = numpy_to_tensor(data).to(model.device)
-
     compressed = model.encode(data_tensor)
     return compressed, data_before
 

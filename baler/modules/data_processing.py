@@ -77,6 +77,8 @@ def numpy_to_df(array, config):
 
 def load_data(data_path: str, config):
     df = pd.read_pickle(data_path)
+    df=df.astype('float32')
+    #print(df.dtypes)
     return df
 
 

@@ -4,6 +4,10 @@ import time
 import pandas as pd
 
 import modules.helper as helper
+import modules.data_processing as data_processing
+
+from sklearn.model_selection import train_test_split
+import modules.sparse_autoencoder as george
 
 
 def main():
@@ -28,9 +32,13 @@ def pre_processing(config):
     config.pre_processing()
 
 def perform_training(config, project_path):
-    train_set, test_set, number_of_columns, normalization_features = helper.process(config.input_path, config)
+    #train_set, test_set, number_of_columns, normalization_features = helper.process(config.input_path, config)
     #train_set_norm = helper.normalize(train_set, config)
     #test_set_norm = helper.normalize(test_set, config)
+
+    df = data_processing.load_data(config.input_path, config)
+    number_of_columns = len(data_processing.get_columns(df))
+
     try:
         config.latent_space_size = int(number_of_columns//config.compression_ratio)
         config.number_of_columns = number_of_columns
@@ -40,19 +48,22 @@ def perform_training(config, project_path):
 
     
 
-    device = helper.get_device()
+    #device = helper.get_device()
 
-    ModelObject = helper.model_init(config=config)
-    model = ModelObject(
-        device=device, n_features=number_of_columns, z_dim=config.latent_space_size
-    )
+    #ModelObject = helper.model_init(config=config)
+    #model = ModelObject(
+    #    device=device, n_features=number_of_columns, z_dim=config.latent_space_size
+    #)
+    #variables = list(df.columns)
+    train_set, test_set = train_test_split(df, test_size=0.15, random_state=1)
+    test_data, reconstructed_data = george.train(number_of_columns, train_set, test_set, config.lr, config.reg_param, config.RHO, config.l1, config.epochs)
 
     output_path = project_path + "training/"
-    test_data_tensor, reconstructed_data_tensor = helper.train(
-        model, number_of_columns, train_set, test_set, output_path, config
-    )
-    test_data = helper.detach(test_data_tensor)
-    reconstructed_data = helper.detach(reconstructed_data_tensor)
+    #test_data_tensor, reconstructed_data_tensor = helper.train(
+    #    model, number_of_columns, train_set, test_set, output_path, config
+    #)
+    #test_data = helper.detach(test_data_tensor)
+    #reconstructed_data = helper.detach(reconstructed_data_tensor)
     """ 
     print("Un-normalzing...")
     start = time.time()
@@ -72,7 +83,7 @@ def perform_training(config, project_path):
     helper.to_pickle(test_data, output_path + "before.pickle")
     helper.to_pickle(reconstructed_data, output_path + "after.pickle")
     #normalization_features.to_csv(project_path + "model/cms_normalization_features.csv")
-    helper.model_saver(model, project_path + "model/model.pt")
+    #helper.model_saver(model, project_path + "model/model.pt")
 
 
 def perform_plotting(project_path, config):

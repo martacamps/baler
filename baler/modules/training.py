@@ -5,12 +5,19 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader
 from tqdm import tqdm
+from torch.nn import functional as F
 
 import modules.utils as utils
 import modules.helper as helper
 
 import os
 
+
+# Helper function for activation extraction
+def get_activation(layer):
+    def hook(model, input, output):
+        layer = output.detach()
+    return hook
 
 def fit(model, train_dl, train_ds, model_children, regular_param, optimizer, RHO, l1):
     print("### Beginning Training")
@@ -92,6 +99,7 @@ def train(model, variables, train_data, test_data, parent_path, config):
     l1 = config.l1
     epochs = config.epochs
     latent_space_size = config.latent_space_size
+    activation_extraction = config.activation_extraction
 
     model_children = list(model.children())
 
@@ -190,8 +198,27 @@ def train(model, variables, train_data, test_data, parent_path, config):
     print(f"{(end - start) / 60:.3} minutes")
     np.save(parent_path + "loss_data.npy", np.array([train_loss, val_loss]))
 
+    if activation_extraction:
+        print('Hello')
+    #     activations = {}
+    #     model.en1.register_forward_hook(get_activation(activations['en1']))
+    #     model.en2.register_forward_hook(get_activation(activations['en2']))
+    #     model.en3.register_forward_hook(get_activation(activations['en3']))
+    #     model.en4.register_forward_hook(get_activation(activations['latent']))
+    #     model.de1.register_forward_hook(get_activation(activations['de1']))
+    #     model.de2.register_forward_hook(get_activation(activations['de2']))
+    #     model.de3.register_forward_hook(get_activation(activations['de3']))
+
+    #     for layer in activations:
+    #         layer = F.leaky_relu(layer) #later change it so that any activation fn can be used
+
+
+
+
     data_as_tensor = torch.tensor(test_data, dtype=torch.float64)
     data_as_tensor = data_as_tensor.to(trained_model.device)
     pred_as_tensor = trained_model(data_as_tensor)
+
+    # if activation_extraction: return data_as_tensor, pred_as_tensor, activations
 
     return data_as_tensor, pred_as_tensor, trained_model

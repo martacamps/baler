@@ -13,6 +13,11 @@ def main():
         helper.create_new_project(project_name)
     elif mode == "train":
         perform_training(config, project_path)
+    elif mode == "train+":
+        config["activation_extraction"] = True
+        perform_training(config, project_path)
+    elif mode == "diagnostics":
+        perform_diagnostics(config, project_path)
     elif mode == "plot":
         perform_plotting(project_path, config)
     elif mode == "compress":
@@ -80,6 +85,9 @@ def perform_training(config, project_path):
         normalization_features,
     )
     helper.model_saver(trained_model, project_path + "compressed_output/model.pt")
+
+def perform_diagnostics(config, project_path):
+    print('TBA')
 
 
 def perform_plotting(project_path, config):

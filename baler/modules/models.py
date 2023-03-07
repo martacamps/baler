@@ -4,10 +4,10 @@ from torch.nn import functional as F
 
 
 # Helper function for activation extraction
-def hook_activations(layer):
-    def hook(model, input, output):
-        layer = output.detach()
-    return hook
+# def hook_activations(activations: dict, layer_name: str):
+#     def hook(model, input, output):
+#         activations[layer_name] = output.detach()
+#     return hook
 
 class george_SAE(nn.Module):
     def __init__(self, device, n_features, z_dim, *args, **kwargs):
@@ -264,3 +264,7 @@ class george_SAE_Dropout(nn.Module):
             l1_loss += torch.mean(torch.abs(values))
         loss = mse_loss + reg_param * l1_loss
         return loss
+    
+    def get_activations(self) -> dict:
+        activations = {}
+        return activations

@@ -13,12 +13,6 @@ import modules.helper as helper
 import os
 
 
-# Helper function for activation extraction
-def get_activation(layer):
-    def hook(model, input, output):
-        layer = output.detach()
-    return hook
-
 def fit(model, train_dl, train_ds, model_children, regular_param, optimizer, RHO, l1):
     print("### Beginning Training")
 

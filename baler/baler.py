@@ -13,6 +13,11 @@ def main():
         helper.createNewProject(project)
     elif mode == "train":
         perform_training(config, project_path)
+    elif mode == "train+":
+        config["activation_extraction"] = True
+        perform_training(config, project_path)
+    elif mode == "diagnostics":
+        perform_diagnostics(config, project_path)
     elif mode == "plot":
         perform_plotting(project_path, config)
     elif mode == "compress":
@@ -65,6 +70,9 @@ def perform_training(config, project_path):
     helper.to_pickle(reconstructed_data_renorm, output_path + "after.pickle")
     normalization_features.to_csv(project_path + "model/cms_normalization_features.csv")
     helper.model_saver(model, project_path + "model/model.pt")
+
+def perform_diagnostics(config, project_path):
+    print('TBA')
 
 
 def perform_plotting(project_path, config):

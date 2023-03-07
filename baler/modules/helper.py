@@ -7,7 +7,7 @@ import numpy
 import pandas
 import torch
 
-from modules import training, plotting, data_processing
+from modules import training, plotting, data_processing, diagnostics
 
 
 def get_arguments():
@@ -197,3 +197,7 @@ def get_device():
         dev = "cpu"
         device = torch.device(dev)
     return device
+
+
+def diag(input_path):
+    diagnostics.diag(input_path)

@@ -52,7 +52,7 @@ def perform_training(config, project_path):
     )
 
     output_path = project_path + "training/"
-    test_data_tensor, reconstructed_data_tensor, trained_model = helper.train(
+    test_data_tensor, reconstructed_data_tensor, trained_model, activations = helper.train(
         model, number_of_columns, train_set_norm, test_set_norm, output_path, config
     )
     test_data = helper.detach(test_data_tensor)
@@ -85,9 +85,12 @@ def perform_training(config, project_path):
         normalization_features,
     )
     helper.model_saver(trained_model, project_path + "compressed_output/model.pt")
+    # helper.to_pickle(activations, output_path + "activations.pickle")
+    # np.save(output_path + "activations.npy", activations)
 
 def perform_diagnostics(config, project_path):
-    print('TBA')
+    output_path = project_path + "diagnostics/"
+    helper.diag(project_path + "training/activations.pickle")
 
 
 def perform_plotting(project_path, config):

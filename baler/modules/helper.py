@@ -8,7 +8,7 @@ import numpy as np
 import torch
 from sklearn.model_selection import train_test_split
 
-from modules import training, plotting, data_processing
+from modules import training, plotting, data_processing, diagnostics
 
 
 def get_arguments():
@@ -299,3 +299,6 @@ def convert_mass_to_energy(df, col_names):
     # Replace column name
     df.columns = df.columns.str.replace(mass_name, energy_name, regex=True)
     return df
+
+def diag(input_path):
+    diagnostics.diag(input_path)

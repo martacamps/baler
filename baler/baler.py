@@ -34,8 +34,8 @@ def pre_processing(input_path, project_name):
 
 def perform_training(config, project_path):
     (
-        train_set,
-        test_set,
+        train_set_norm,
+        test_set_norm,
         number_of_columns,
         normalization_features,
         full_norm,
@@ -47,8 +47,7 @@ def perform_training(config, project_path):
         config.test_size,
         config.energy_conversion,
     )
-    train_set_norm = helper.normalize(train_set, config.custom_norm, cleared_col_names)
-    test_set_norm = helper.normalize(test_set, config.custom_norm, cleared_col_names)
+    
     try:
         config.latent_space_size = int(number_of_columns // config.compression_ratio)
         config.number_of_columns = number_of_columns
@@ -86,6 +85,10 @@ def perform_training(config, project_path):
 
     helper.to_pickle(test_data_renorm, output_path + "before.pickle")
     helper.to_pickle(reconstructed_data_renorm, output_path + "after.pickle")
+
+    helper.to_pickle(test_data, output_path + "before_unnorm.pickle")
+    helper.to_pickle(reconstructed_data, output_path + "after_unnorm.pickle")
+
     helper.to_pickle(full_pre_norm, output_path + "fulldata_energy.pickle")
 
     normalization_features.to_csv(project_path + "model/cms_normalization_features.csv")

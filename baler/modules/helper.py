@@ -95,7 +95,8 @@ def set_config(c):
     c.epochs              = 5
     c.early_stopping      = True
     c.lr_scheduler        = False
-    c.patience            = 100
+    c.OneCycle            = True
+    c.patience            = 50
     c.min_delta           = 0
     c.model_name          = "george_SAE"
     c.custom_norm         = False

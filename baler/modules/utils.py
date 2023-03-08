@@ -142,5 +142,24 @@ class LRScheduler:
             verbose=True,
         )
 
-    def __call__(self, val_loss):
-        self.lr_scheduler.step(val_loss)
+    def __call__(self, train_loss):
+        self.lr_scheduler.step(train_loss)
+
+class OneCycle:
+    def __init__(self, optimizer, epochs, max_lr, steps_per_epoch):
+        self.optimizer = optimizer
+        self.epochs = epochs
+        self.max_lr = max_lr
+        self.steps_per_epoch = steps_per_epoch
+
+        # Maybe add if statements for selectment of lr schedulers
+        self.lr_scheduler = torch.optim.lr_scheduler.OneCycleLR(
+            self.optimizer,
+            epochs=self.epochs,
+            steps_per_epoch=self.steps_per_epoch,
+            max_lr=self.max_lr,
+            verbose=True,
+        )
+
+    def __call__(self, train_loss):
+        self.lr_scheduler.step(train_loss)

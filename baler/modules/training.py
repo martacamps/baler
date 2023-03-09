@@ -83,7 +83,7 @@ def train(model, variables, train_data, test_data, parent_path, config):
     device = helper.get_device()
     model = model.to(device)
 
-    train_data = train_data.iloc[51:,50:100]
+    train_data = train_data#.iloc[:50,100:150]
 
     # Converting data to tensors
     train_ds = torch.tensor(train_data.values, dtype=torch.float32, device=device).view(1,1,50,50)

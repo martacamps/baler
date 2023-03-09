@@ -144,7 +144,7 @@ def compress(number_of_columns, model_path, input_path, config):
 
     # Give the encoding function the correct input as tensor
     data = data_loader(input_path, config)
-    data = data.iloc[51:,50:100]
+    data = data#.iloc[:50,100:150]
     # data = data_processing.clean_data(data, config)
     # data_tensor = torch.ones([1000,1,101,250], dtype=torch.float32, device=device)
     data_before = numpy.array(data)

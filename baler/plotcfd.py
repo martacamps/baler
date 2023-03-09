@@ -5,9 +5,9 @@ import matplotlib.pyplot as plt
 import pickle
 
 
-pickle_file = "../data/cfd/cfd.pickle"
+pickle_file = "../data/cfd/cfd_new.pickle"
 
-decompressed_cfd = "../projects/ConvAEDes/decompressed_output/decompressed.pickle"
+decompressed_cfd = "../projects/ConvAEDes_new/decompressed_output/decompressed.pickle"
 
 
 def pickle_to_df(file):
@@ -19,14 +19,14 @@ def pickle_to_df(file):
 
 
 data = pickle_to_df(pickle_file)
-data = pd.DataFrame(data).iloc[51:,50:100]
+data = pd.DataFrame(data)#.iloc[:50,100:150]
 data = data.astype(dtype="float32")
 
 data_decompressed = pickle_to_df(decompressed_cfd)
 data_decompressed = pd.DataFrame(data_decompressed.reshape((50,50)))
 data_decompressed = data_decompressed.astype(dtype="float32")
 
-diff = data_decompressed - data
+diff = data_decompressed.values - data.values
 
 fig, axs = plt.subplots(3, sharex=True, sharey=True)
 axs[0].set_title("Original", fontsize=11)
@@ -49,5 +49,5 @@ plt.ylim(0, 50)
 divider_3 = make_axes_locatable(axs[2])
 cax_3 = divider_3.append_axes("right", size="5%", pad=0.05)
 plt.colorbar(im3, cax=cax_3, shrink=0.1)
-fig.savefig('../projects/ConvAEDes/decompressed_output/CFD_plot_500EP_new.png')
+fig.savefig('../projects/ConvAEDes_new/decompressed_output/CFD_plot_500EP_newFull.png')
 exit()

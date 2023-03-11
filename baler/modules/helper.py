@@ -300,5 +300,5 @@ def convert_mass_to_energy(df, col_names):
     df.columns = df.columns.str.replace(mass_name, energy_name, regex=True)
     return df
 
-def diag(input_path):
-    diagnostics.diag(input_path)
+def diag(output_path, input_path, config):
+    diagnostics.diag(output_path, input_path, config)

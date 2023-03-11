@@ -74,7 +74,8 @@ def perform_training(config, project_path):
 
 def perform_diagnostics(config, project_path):
     output_path = project_path + "diagnostics/"
-    helper.diag(project_path + "training/activations.pickle")
+    input_path = project_path + "training/activations.pickle" 
+    helper.diag(output_path, input_path, config)
 
 
 def perform_plotting(project_path, config):

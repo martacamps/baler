@@ -199,5 +199,5 @@ def get_device():
     return device
 
 
-def diag(input_path):
-    diagnostics.diag(input_path)
+def diag(output_path, input_path, config):
+    diagnostics.diag(output_path, input_path, config)

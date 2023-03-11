@@ -154,7 +154,7 @@ def train(model, variables, train_data, test_data, parent_path, config):
     )
 
     if activation_extraction:
-        hooks = model.store_hooks()
+        hooks = model.store_hooks() 
 
     data_as_tensor = torch.tensor(test_data.values, dtype=torch.float64)
     data_as_tensor = data_as_tensor.to(model.device)

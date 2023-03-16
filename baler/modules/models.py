@@ -3,12 +3,6 @@ from torch import nn
 from torch.nn import functional as F
 
 
-# Helper function for activation extraction
-# def hook_activations(activations: dict, layer_name: str):
-#     def hook(model, input, output):
-#         activations[layer_name] = output.detach()
-#     return hook
-
 class george_SAE(nn.Module):
     def __init__(self, device, n_features, z_dim, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -52,22 +46,19 @@ class george_SAE(nn.Module):
             self.activations[layer_name] = output.detach()
         return hook
     
+    def get_layers(self) -> list:
+        return [self.en1, self.en2, self.en3, self.de1, self.de2, self.de3]
+    
     def store_hooks(self) -> list:
-        h1 = self.en1.register_forward_hook(self.get_hook('en1'))
-        h2 = self.en2.register_forward_hook(self.get_hook('en2'))
-        h3 = self.en3.register_forward_hook(self.get_hook('en3'))
-        h4 = self.de1.register_forward_hook(self.get_hook('de1'))
-        h5 = self.de2.register_forward_hook(self.get_hook('de2'))
-        h6 = self.de3.register_forward_hook(self.get_hook('de3'))
-        return [h1, h2, h3, h4, h5, h6]
+        layers = self.get_layers()
+        hooks = []
+        for i in range(len(layers)):
+            hooks.append(layers[i].register_forward_hook(self.get_hook(str(i))))
+        return hooks
 
     def get_activations(self) -> dict:
-        self.activations['en1'] = F.leaky_relu(self.activations['en1'])
-        self.activations['en2'] = F.leaky_relu(self.activations['en2'])
-        self.activations['en3'] = F.leaky_relu(self.activations['en3'])
-        self.activations['de1'] = F.leaky_relu(self.activations['de1'])
-        self.activations['de2'] = F.leaky_relu(self.activations['de2'])
-        self.activations['de3'] = F.leaky_relu(self.activations['de3'])
+        for kk in self.activations:
+            self.activations[kk] = F.leaky_relu(self.activations[kk])
         return self.activations
     
     def detach_hooks(self, hooks: list) -> None:

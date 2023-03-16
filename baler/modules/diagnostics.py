@@ -2,20 +2,17 @@ import pickle
 import torch
 import matplotlib.pyplot as plt
 import matplotlib.colors
+import matplotlib.ticker
 import copy
 import numpy as np
 import pandas as pd
 from matplotlib.backends.backend_pdf import PdfPages
 
-# class MidpointNormalize(matplotlib.colors.Normalize):
-#     def __init__(self, vmin=None, vmax=None, midpoint=None, clip=False) -> None:
-#         self.midpoint = midpoint
-#         matplotlib.colors.Normalize.__init__(self, vmin, vmax, clip)
-
-#     def __call__(self, value, clip= None):
-#         x, y = [self.vmin, self.midpoint, self.vmax], [0, 0.5, 1]
-#         return np.ma.masked_array(np.interp(value, x, y))
-
+def get_nodes_numbers(input_dict: dict) -> np.array:
+    nodes_numbers = np.array([0])
+    for kk in input_dict:
+        nodes_numbers = np.append(nodes_numbers, len(input_dict[kk].T))
+    return nodes_numbers
 
 def dict_to_square_matrix(input_dict: dict) -> np.array:
     max_number_of_nodes = 0
@@ -45,29 +42,34 @@ def get_mean_node_activations(input_dict: dict) -> dict:
     return output_dict
 
 
-def plot(data: np.array, output_path: str) -> None:
-    midpoint_value = abs(np.min(data))/(abs(np.max(data)) + abs(np.min(data)))
-    cmap = matplotlib.colors.LinearSegmentedColormap.from_list("", ["navy", "white", "firebrick"])
-    # norm = MidpointNormalize(midpoint=0)
-
-    NAP = plt.imshow(
+def plot(data: np.array, nodes_numbers: np.array, output_path: str) -> None:
+    fig, ax = plt.subplots()
+    NAP = ax.imshow(
         data.T,
-        cmap=cmap,
+        cmap='RdBu_r',
         interpolation='nearest',
         aspect='auto',
         origin='lower',
-        # norm=norm
+        norm=matplotlib.colors.CenteredNorm()
     )
-    plt.colorbar(NAP)
-    plt.title('NAP diagram')
-    plt.savefig(output_path + "diagnostics.pdf")
+    colorbar = plt.colorbar(NAP)
+    colorbar.set_label("Activation")
+    ax.set_title("Neural Activation Pattern")
+    ax.set_xlabel("Layers")
+    ax.set_ylabel("Number of nodes")
+    xtick_loc = ax.get_xticks().tolist()
+    ax.xaxis.set_major_locator(matplotlib.ticker.FixedLocator(xtick_loc))
+    ax.set_xticklabels(['','en1', 'en2', 'en3', 'de1', 'de2', 'de3', ''])
+    ax.set_yticks(nodes_numbers)
+    ax.figure.savefig(output_path + "diagnostics.pdf")
     
 
 
 def diag(output_path, input_path, config) -> None:
     with open(input_path, "rb") as handle:
         input = pickle.load(handle)
+    nodes_numbers = get_nodes_numbers(input)
     data = dict_to_square_matrix(get_mean_node_activations(input))
-    plot(data, output_path)
+    plot(data, nodes_numbers, output_path)
   
         

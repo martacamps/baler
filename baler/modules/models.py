@@ -3,12 +3,6 @@ from torch import nn
 from torch.nn import functional as F
 
 
-# Helper function for activation extraction
-# def hook_activations(activations: dict, layer_name: str):
-#     def hook(model, input, output):
-#         activations[layer_name] = output.detach()
-#     return hook
-
 class george_SAE(nn.Module):
     def __init__(self, device, n_features, z_dim, *args, **kwargs):
         super().__init__(*args, **kwargs)

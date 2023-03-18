@@ -14,7 +14,7 @@ def main():
     elif mode == "train":
         perform_training(config, project_path)
     elif mode == "train+":
-        config["activation_extraction"] = True
+        config.activation_extraction = True
         perform_training(config, project_path)
     elif mode == "diagnostics":
         perform_diagnostics(config, project_path)
@@ -85,10 +85,11 @@ def perform_training(config, project_path):
         normalization_features,
     )
     helper.model_saver(trained_model, project_path + "compressed_output/model.pt")
-    # helper.to_pickle(activations, output_path + "activations.pickle")
+    helper.to_pickle(activations, output_path + "activations.pickle")
     # np.save(output_path + "activations.npy", activations)
 
 def perform_diagnostics(config, project_path):
+    print("Performing diagnostics...")
     output_path = project_path + "diagnostics/"
     input_path = project_path + "training/activations.pickle" 
     helper.diag(output_path, input_path, config)

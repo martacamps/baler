@@ -88,6 +88,7 @@ class Config:
     save_as_root: bool
     test_size: float
     energy_conversion: bool
+    activation_extraction: bool
 
 
 def create_default_config(project_name: str) -> str:
@@ -112,6 +113,7 @@ def set_config(c):
     c.save_as_root        = True
     c.test_size           = 0.15
     c.energy_conversion   = False
+    c.activation_extraction = False
 
 """
 

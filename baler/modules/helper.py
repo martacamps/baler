@@ -244,6 +244,8 @@ def compress(model_path, config):
         n_features=number_of_columns,
         z_dim=latent_space_size,
     )
+    # Set model to Evaluation mode
+    model.eval()
 
     if config.data_dimension == 2:
         data_tensor = torch.from_numpy(data).to(model.device).view(1, 1, 50, 50)
@@ -272,6 +274,8 @@ def decompress(model_path, input_path, model_name):
         n_features=number_of_columns,
         z_dim=latent_space_size,
     )
+    # Set model to Evaluation mode
+    model.eval()
 
     # Load the data & convert to tensor
     data_tensor = torch.from_numpy(data).to(model.device)

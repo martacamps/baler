@@ -94,8 +94,22 @@ def perform_compression(config, project_path):
         model_path=project_path + "compressed_output/model.pt",
         config=config,
     )
-    # Converting back to numpyarray
-    compressed = helper.detach(compressed)
+
+    # Check if the output is a tuple
+    if isinstance(compressed, tuple):
+        (h1, h2, h3, z) = compressed
+        # Converting back to numpyarray
+        h1 = helper.detach(h1)
+        h2 = helper.detach(h2)
+        h3 = helper.detach(h3)
+        z = helper.detach(z)
+
+        # Pack the contexts and latent variables into single jagged array to prep save
+        # Arrays are transposed such that the second dimension is same for all arrays which enables packing into a jagged array
+        packed_out = np.array([np.transpose(h1), np.transpose(h2), np.transpose(h3), np.transpose(z)],dtype='object')
+    else:
+        # Converting back to numpyarray
+        compressed = helper.detach(compressed)
     end = time.time()
 
     print("Compression took:", f"{(end - start) / 60:.3} minutes")
@@ -106,6 +120,13 @@ def perform_compression(config, project_path):
         np.savez_compressed(
             project_path + "compressed_output/compressed.npz",
             data=compressed,
+            names=names,
+            normalization_features=normalization_features,
+        )
+    elif isinstance(compressed, tuple):
+        np.savez(
+            project_path + "compressed_output/compressed.npz",
+            data=packed_out,
             names=names,
             normalization_features=normalization_features,
         )

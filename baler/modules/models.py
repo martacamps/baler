@@ -224,7 +224,48 @@ class george_SAE_Dropout(nn.Module):
             l1_loss += torch.mean(torch.abs(values))
         loss = mse_loss + reg_param * l1_loss
         return loss
-        
+
+
+class george_SAE_SkipConnections(nn.Module):
+    def __init__(self, device, n_features, z_dim, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.device = device
+
+        # encoder
+        self.en1 = nn.Linear(n_features, 200, dtype=torch.float64, device=device)
+        self.en2 = nn.Linear(200, 100, dtype=torch.float64, device=device)
+        self.en3 = nn.Linear(100, 50, dtype=torch.float64, device=device)
+        self.en4 = nn.Linear(50, z_dim, dtype=torch.float64, device=device)
+        # decoder with skip_conn
+        self.de1 = nn.Linear(z_dim, 50, dtype=torch.float64, device=device)
+        self.de2 = nn.Linear(100, 100, dtype=torch.float64, device=device)
+        self.de3 = nn.Linear(200, 200, dtype=torch.float64, device=device)
+        self.de4 = nn.Linear(400, n_features, dtype=torch.float64, device=device)
+
+        self.n_features = n_features
+        self.z_dim = z_dim
+
+    def encode(self, x):
+        h1 = F.leaky_relu(self.en1(x))
+        h2 = F.leaky_relu(self.en2(h1))
+        h3 = F.leaky_relu(self.en3(h2))
+        z = self.en4(h3)
+        return h1, h2, h3, z
+
+    def decode(self, h1, h2, h3, z):
+        h4 = F.leaky_relu(self.de1(z))
+        h5 = F.leaky_relu(self.de2(torch.cat((h4,h3),dim=1)))
+        h6 = F.leaky_relu(self.de3(torch.cat((h5,h2),dim=1)))
+        out = self.de4(torch.cat((h6,h1),dim=1))
+        return out
+
+    def forward(self, x):
+        h1, h2, h3, z = self.encode(x)
+        out = self.decode(h1, h2, h3, z)
+        return out
+
+
 class Conv_AE(nn.Module):
         def __init__(self, device, n_features, z_dim, *args, **kwargs):
             super(Conv_AE, self).__init__(*args, **kwargs)

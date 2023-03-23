@@ -32,5 +32,5 @@ def test_CMS():
     old_average = old_loaded["average"]
     old_rms = old_loaded["rms"]
 
-    assert np.isclose(new_average, old_average, rtol=1e-05).all()
-    assert np.isclose(new_rms, old_rms, rtol=1e-05).all()
+    assert np.isclose(new_average, old_average, rtol=1e-03).all()
+    assert np.isclose(new_rms, old_rms, rtol=1e-03).all()

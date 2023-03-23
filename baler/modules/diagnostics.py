@@ -5,7 +5,6 @@ import matplotlib.colors
 import matplotlib.ticker
 import copy
 import numpy as np
-import pandas as pd
 from matplotlib.backends.backend_pdf import PdfPages
 
 def get_nodes_numbers(input_dict: dict) -> np.array:

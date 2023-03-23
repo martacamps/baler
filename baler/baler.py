@@ -22,9 +22,13 @@ def main():
             config.save_as_root, config.model_name, project_path, config
         )
     elif mode == "info":
-        print_info(project_path)
+        print_info(config, project_path)
     else:
-        raise NameError("Baler mode " + mode + " not recognised. Use baler --help to see available modes.")
+        raise NameError(
+            "Baler mode "
+            + mode
+            + " not recognised. Use baler --help to see available modes."
+        )
 
 
 def perform_training(config, project_path):
@@ -164,14 +168,14 @@ def perform_decompression(save_as_root, model_name, project_path, config):
         )
 
 
-def print_info(project_path):
+def print_info(config, project_path):
     print(
         "================================== \n Information about your compression \n================================== "
     )
 
-    pre_compression = project_path + "compressed_output/cleandata_pre_comp.pickle"
-    compressed = project_path + "compressed_output/compressed.pickle"
-    decompressed = project_path + "decompressed_output/decompressed.pickle"
+    pre_compression = config.input_path
+    compressed = project_path + "compressed_output/compressed.npz"
+    decompressed = project_path + "decompressed_output/decompressed.npz"
 
     files = [pre_compression, compressed, decompressed]
     q = []

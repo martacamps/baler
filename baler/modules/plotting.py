@@ -17,6 +17,7 @@ import numpy as np
 from tqdm import tqdm
 from tqdm import trange
 from matplotlib.backends.backend_pdf import PdfPages
+import imageio
 
 
 def loss_plot(path_to_loss_data, output_path, config):
@@ -277,12 +278,7 @@ def plot_2D(project_path, config):
         plt.ylim(0, 50)
         plt.xlim(0, 50)
         fig.suptitle(
-            "Compressed file is 10% the size of original,\n75 epochs (3.5 min)",
-            y=0.9,
-            fontsize=16,
-        )
-        fig.suptitle(
-            "Compressed file is 10% the size of original,\n500 epochs (20 min)",
+            "Compressed file is 10% the size of original,\n100 epochs (5 min)",
             y=0.9,
             fontsize=16,
         )
@@ -290,6 +286,11 @@ def plot_2D(project_path, config):
         fig.savefig(
             project_path + "/plotting/CFD" + str(ind) + ".jpg", bbox_inches="tight"
         )
+
+    with imageio.get_writer(project_path + "/plotting/CFD.gif", mode="I") as writer:
+        for ind in trange(num_tiles):
+            image = imageio.imread(project_path + "/plotting/CFD" + str(ind) + ".jpg")
+            writer.append_data(image)
 
 
 def plot(project_path, config):

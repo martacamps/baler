@@ -60,7 +60,7 @@ def fit(
         reconstructions = model(inputs)
 
         # Compute how far off the prediction is
-        loss, mse_loss, l1_loss = utils.mse_loss_l1(
+        loss, mse_loss, l1_loss = utils.mse_sum_loss_l1(
             model_children=model_children,
             true_data=inputs,
             reconstructed_data=reconstructions,
